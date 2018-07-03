@@ -235,19 +235,31 @@ extension = strsplit(FileName,'.');
 boxMsg = get(handles.ROIList,'String');
 if(strcmp(extension{size(extension,2)},'mat'))
     Tmp = load(FullPathName);
+    if(iscell(Tmp.Mask))
     for i=1:size(Tmp.Mask,2)
         if(size(boxMsg,2)==0)
             boxMsg{size(boxMsg,1),1} = ['ROI' num2str(size(boxMsg,1))];
-            handles.ROI{size(handles.ROI,2)+1}.vol = Tmp.Mask{i}.vol;
-            handles.ROI{size(handles.ROI,2)}.color = Tmp.Mask{i}.color;
+            handles.ROI{size(handles.ROI,2)+1}.vol = Tmp.Mask{i};
+            handles.ROI{size(handles.ROI,2)}.color = rand(3);
         else
             boxMsg{size(boxMsg,1)+1,1} = ['ROI' num2str(size(boxMsg,1)+1)];
-            handles.ROI{size(handles.ROI,2)+1}.vol = Tmp.Mask{i}.vol;
-            handles.ROI{size(handles.ROI,2)}.color = Tmp.Mask{i}.color;
+            handles.ROI{size(handles.ROI,2)+1}.vol = Tmp.Mask{i};
+            handles.ROI{size(handles.ROI,2)}.color = rand(3);
+        end
+    end
+    else
+        if(size(boxMsg,2)==0)
+            boxMsg{size(boxMsg,1),1} = ['ROI' num2str(size(boxMsg,1))];
+            handles.ROI{size(handles.ROI,2)+1}.vol = Tmp.Mask;
+            handles.ROI{size(handles.ROI,2)}.color = rand(3);
+        else
+            boxMsg{size(boxMsg,1)+1,1} = ['ROI' num2str(size(boxMsg,1)+1)];
+            handles.ROI{size(handles.ROI,2)+1}.vol = Tmp.Mask;
+            handles.ROI{size(handles.ROI,2)}.color = rand(3);
         end
     end
 else
-    niftiFile = load_nii(FullPathName);
+    niftiFile = load_untouch_nii(FullPathName);
     boxMsg = get(handles.ROIList,'String');
     if(size(boxMsg,2)==0)
         boxMsg{size(boxMsg,1),1} = ['ROI' num2str(size(boxMsg,1))];
@@ -267,8 +279,9 @@ guidata(gcbo,handles);
 
 % --- Executes on button press in save_rois.
 function save_rois_Callback(hObject, eventdata, handles)
-
-Mask = handles.ROI;
+for i=1:size(handles.ROI,2)
+Mask{i} = handles.ROI{i}.vol;
+end
 [FileName, PathName] = uiputfile({'*.mat'},'Save as');
 FullPathName = fullfile(PathName, FileName);
 if FileName ~= 0
@@ -319,14 +332,17 @@ rois = removerows(rois,index_selected);
 list = handles.ROI';
 list = removerows(list,index_selected);
 index_selected = index_selected-1;
+if(index_selected == 0)
+    index_selected = 1;
+end
 if(size(list,1) == 0) 
     list = {};
     rois = char.empty(1,0);
     index_selected=1;
 end
 handles.ROI = list';
-set(handles.ROIList,'String',rois);
 set(handles.ROIList,'Value',index_selected);
+set(handles.ROIList,'String',rois);
 guidata(gcbo,handles);
 RefreshPlot(handles);
 
@@ -802,9 +818,9 @@ index_selected = get(handles.ROIList,'Value');
 if(index_selected > size(handles.ROI,2))
     return;
 end
-se = strel('line',3,0);
-se1 = strel('line',3,90);
-handles.ROI{index_selected}.vol = imdilate(handles.ROI{index_selected}.vol,[se se1]);
+[xx,yy,zz] = ndgrid(-5:5);
+nhood = sqrt(xx.^2 + yy.^2 + zz.^2) <= 5.0;
+handles.ROI{index_selected}.vol = imdilate(handles.ROI{index_selected}.vol,nhood);
 guidata(hObject,handles);
 RefreshPlot(handles);
 
@@ -815,9 +831,9 @@ index_selected = get(handles.ROIList,'Value');
 if(index_selected > size(handles.ROI,2))
     return;
 end
-se = strel('line',3,0);
-se1 = strel('line',3,90);
-handles.ROI{index_selected}.vol = imerode(handles.ROI{index_selected}.vol,[se se1]);
+[xx,yy,zz] = ndgrid(-2:2);
+nhood = sqrt(xx.^2 + yy.^2 + zz.^2) <= 2.0;
+handles.ROI{index_selected}.vol = imerode(handles.ROI{index_selected}.vol,nhood);
 guidata(hObject,handles);
 RefreshPlot(handles);
 
