@@ -16,11 +16,11 @@
 resources:
   containers:
   - container: dev1
-    image: neuropoly/qmrlab
+    image: agahkarakuzu/qsimple
 jobs:
 - job: job_container
   pool:
     name: Hosted Ubuntu 1604
   container: dev1
   steps:
-  - script: octave -no-gui --eval "disp('hello test world');"
+  - script: octave --eval "disp('hello test world');"
