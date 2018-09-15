@@ -20,7 +20,7 @@ resources:
 jobs:
 - job: job_container
   pool:
-    name: ubuntu-16.04
+    name: Hosted Ubuntu 1604
   container: dev1
   steps:
   - script: printenv
