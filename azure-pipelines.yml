@@ -24,4 +24,4 @@ jobs:
   container: dev1
   steps:
   - script: echo $(Build.SourcesDirectory)
-  - script: octave --eval "disp($(Build.SourcesDirectory));"
+  - script: octave --eval "cd('$(Build.SourcesDirectory)');bootstrapTest;"
