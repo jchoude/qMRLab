@@ -24,4 +24,6 @@ jobs:
   container: dev1
   steps:
   - script: echo $(Build.SourcesDirectory)
-  - script: octave --eval "cd('$(Build.SourcesDirectory)');bootstrapTest;"
+    displayName: Batch echo
+  - script: octave --eval "cd(['$(Build.SourcesDirectory)' '/qMRLab']);bootstrapTest('AZURE');"
+    displayName: bootstrapTest on Octave
