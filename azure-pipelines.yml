@@ -23,4 +23,5 @@ jobs:
     name: Hosted Ubuntu 1604
   container: dev1
   steps:
-  - script: octave --eval "disp('hello test world');"
+  - script: echo $(Build.SourcesDirectory)
+  - script: octave --eval "disp($(Build.SourcesDirectory));"
