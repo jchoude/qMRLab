@@ -15,13 +15,12 @@
 
 resources:
   containers:
-  - container: octaveSos
-    image: neuropoly/qmrlab
-
-    jobs:
-- job: Test
+  - container: dev1
+    image: ubuntu:16.04
+jobs:
+- job: job_container
   pool:
     name: default
-  container: octaveSos
+  container: dev1
   steps:
-  - script: octave --no-gui --eval "disp('hello test world')"
+  - script: printenv
