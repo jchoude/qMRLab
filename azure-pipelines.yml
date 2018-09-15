@@ -23,7 +23,7 @@ jobs:
     name: Hosted Ubuntu 1604
   container: dev1
   steps:
-  - script: echo $(Build.SourcesDirectory)
+  - script: ls $(Build.SourcesDirectory)
     displayName: Batch echo
-  - script: octave --eval "cd(['$(Build.SourcesDirectory)' '/qMRLab']);bootstrapTest('AZURE');"
+  - script: octave --eval "cd('$(Build.SourcesDirectory)');bootstrapTest('AZURE');"
     displayName: bootstrapTest on Octave
