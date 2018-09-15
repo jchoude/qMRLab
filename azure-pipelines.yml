@@ -3,12 +3,25 @@
 # Add steps that use Docker Compose, tag images, push to a registry, run an image, and more:
 # https://docs.microsoft.com/vsts/pipelines/languages/docker
 
-pool:
-  vmImage: 'Ubuntu 16.04'
+#pool:
+#  vmImage: 'Ubuntu 16.04'
 
-variables:
-  imageName: 'neuropoly/qmrlab2:$(build.buildId)'
+#variables:
+#  imageName: 'neuropoly/qmrlab2:$(build.buildId)'
 
-steps:
-- script: docker build -f Dockerfile -t $(imageName) .
-  displayName: 'docker build'
+#steps:
+#- script: docker build -f Dockerfile -t $(imageName) .
+#  displayName: 'docker build'
+
+resources:
+  containers:
+  - container: octaveSos
+    image: neuropoly/qmrlab
+
+    jobs:
+- job: Test
+  pool:
+    name: default
+  container: octaveSos
+  steps:
+  - script: octave --no-gui --eval "disp('hello test world')"
