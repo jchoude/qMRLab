@@ -116,6 +116,7 @@ function AddROI_Callback(hObject, eventdata, handles)
 set(handles.drawROI, 'enable', 'on');
 set(handles.AddROI, 'enable', 'off');
 uiwait(msgbox('Press ESC and then SPACE to finish adding ROIs.','Info','modal'));
+tool = imtool3D(handles.CurrentData);
 drawROI_Callback(hObject, eventdata, handles)
 
 % --- Executes on selection change in drawROI.
